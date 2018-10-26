@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<item>
+        <shape android:shape="rectangle">
+            &lt;!&ndash;<solid android:color="#ffffff" />&ndash;&gt;
+            &lt;!&ndash;<corners android:topRightRadius="2dp" android:bottomRightRadius="2dp" />&ndash;&gt;
+        </shape>
+    </item>-->
+    <item
+        android:drawable="@drawable/ic_nearme_arrow"
+        android:gravity="center"
+        android:width="24dp"
+        android:height="24dp"
+        android:right="10dp"/>
+</layer-list>
