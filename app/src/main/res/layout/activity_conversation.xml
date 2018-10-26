@@ -51,6 +51,7 @@
         android:background="@android:color/white" />-->
 
     <FrameLayout
+        android:id="@+id/voice_chat_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#CC181918"
@@ -88,7 +89,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             app:backgroundTint="#169a5a"
-            android:scaleType="center"
+            android:scaleType="centerInside"
+            app:fabSize="mini"
             app:srcCompat="@drawable/ic_mic"/>
     </RelativeLayout>
 

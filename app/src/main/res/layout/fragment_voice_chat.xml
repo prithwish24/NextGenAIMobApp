@@ -2,11 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cts.product.mob.android.VoiceChatFragment">
+    tools:context="com.cts.product.mob.android.FragmentVoiceChat">
 
-    <TextView
+    <!--<include layout="@layout/recycler_view_chat_window"/>-->
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/recycler_chat_window">
+
+    </android.support.v7.widget.RecyclerView>
 
 </FrameLayout>

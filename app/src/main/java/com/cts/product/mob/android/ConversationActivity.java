@@ -1,13 +1,12 @@
 package com.cts.product.mob.android;
 
-import android.annotation.SuppressLint;
+import android.app.FragmentManager;
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.cts.product.mob.R;
 
@@ -32,6 +31,21 @@ public class ConversationActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        FloatingActionButton btnMic = (FloatingActionButton) findViewById(R.id.button_mic);
+        btnMic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Mic pressed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Clear existing history
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getFragmentManager().beginTransaction()
+                .replace(R.id.voice_chat_frame, FragmentVoiceChat.newInstance("",""), FragmentVoiceChat.TAG)
+                .addToBackStack(null)
+                .commit();
 
     }
 

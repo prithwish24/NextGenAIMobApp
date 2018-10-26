@@ -1,0 +1,48 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<SwitchPreference
+        android:defaultValue="true"
+        android:key="enable_zip_code_mocking"
+        android:summary="Set the current location as defined. Location can be mocked using zip code."
+        android:title="Enable ZIP Code Mocking" />-->
+
+    <!--<EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="63145"
+        android:inputType="textCapWords"
+        android:key="mock_zip_code"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Mock Zip Code" />-->
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/pref_environment_list"
+        android:entryValues="@array/pref_environment_list"
+        android:key="app_environment"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="Service Environment" />
+
+    <!--<EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="http://52.201.244.148"
+        android:inputType="textCapWords"
+        android:key="app_service_url"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Service URL" />-->
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="210efa3038894bf38fd0cad26b993dbb"
+        android:inputType="textCapWords"
+        android:key="dialog_flow_client_token"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="AI Agent Access Token" />
+
+</PreferenceScreen>
