@@ -71,6 +71,7 @@
         android:paddingBottom="3sp"
         android:background="#DD181918">
         <TextView
+            android:id="@+id/speechTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

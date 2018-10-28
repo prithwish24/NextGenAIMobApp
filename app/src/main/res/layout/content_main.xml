@@ -53,6 +53,7 @@
           android:id="@+id/text_eplus"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginStart="10dp"
           android:layout_toEndOf="@+id/image_eplus"
           android:layout_toStartOf="@id/text_signin"
           android:layout_centerVertical="true"
@@ -70,7 +71,7 @@
           android:layout_marginTop="15dp"
           android:layout_marginEnd="10dp"
           android:layout_marginBottom="15dp"
-          android:layout_marginStart="10dp"
+          android:layout_marginStart="15dp"
           android:text="SIGN IN"
           android:textColor="@color/colorPrimary" />
 
@@ -99,11 +100,15 @@
       <EditText
           android:layout_width="match_parent"
           android:layout_height="40dp"
-          android:layout_marginEnd="15dp"
-          android:layout_marginStart="15dp"
+          android:layout_marginEnd="20dp"
+          android:layout_marginStart="20dp"
           android:layout_marginTop="10dp"
+          android:paddingStart="8sp"
+          android:paddingEnd="8sp"
           android:background="@drawable/edit_text_bg"
-          android:drawableEnd="@drawable/edit_text_near_me_bg"/>
+          android:drawableEnd="@drawable/edit_text_near_me_bg"
+          android:textSize="14sp"
+          />
 
    </LinearLayout>
 

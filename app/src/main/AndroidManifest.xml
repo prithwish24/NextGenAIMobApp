@@ -11,11 +11,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".android.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -23,8 +22,7 @@
         </activity>
         <activity
             android:name=".android.ConversationActivity"
-            android:label="@string/title_activity_conversation"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/title_activity_conversation">
         </activity>
     </application>
 
