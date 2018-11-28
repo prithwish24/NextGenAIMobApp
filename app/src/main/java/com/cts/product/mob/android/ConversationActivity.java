@@ -17,8 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cts.product.mob.R;
+import static com.cts.product.mob.adapter.ChatMessage.ChatDirection.Sent;
+import static com.cts.product.mob.adapter.ChatMessage.ChatDirection.Received;
 import com.cts.product.mob.adapter.ChatMessage;
 import com.cts.product.mob.service.MicrophoneState;
+import com.cts.product.mob.util.TTS;
 
 import java.util.List;
 
@@ -28,6 +31,7 @@ import ai.api.android.AIConfiguration;
 import ai.api.android.AIService;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
+import ai.api.model.Result;
 import ai.api.model.Status;
 import ai.api.services.GoogleRecognitionServiceImpl;
 
@@ -43,6 +47,7 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
     // Services
     private AIService aiService;
     private MicrophoneState micState;
+    private TTS tts;
 
 
     @Override
@@ -68,8 +73,9 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
 
 
         // Global controls
-        this.micButton = (FloatingActionButton) findViewById(R.id.button_mic);
-        this.speechTextView = (TextView) findViewById(R.id.speechTextView);
+        tts = new TTS(this);
+        this.micButton = findViewById(R.id.button_mic);
+        this.speechTextView = findViewById(R.id.speechTextView);
         this.chatRosterFragment = FragmentVoiceChat.newInstance("","");
 
         final FragmentManager fragmentManager = getFragmentManager();
@@ -89,15 +95,12 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
         requestRecordAudioPermission();
     }
 
-
-
     private void initAIService() {
         final AIConfiguration config = new AIConfiguration(
-                "c57af71690154ea18eeeebe86edd152b",
+                "c2829da0d1124a9c9592e7a9150e4c17",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -116,10 +119,9 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
         micButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                aiService.startListening();
+                startListening();
             }
         });
-
 
     }
 
@@ -127,7 +129,6 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
     /*
      * ------------------- Private methods ---------------------
      */
-
 
     public void startListening() {
         runOnUiThread(new Runnable() {
@@ -199,6 +200,18 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
         }*/
     }
 
+    private void addToRosterAndSpeak(String speechText, ChatMessage.ChatDirection direction) {
+        addToRosterAndSpeak(null, speechText, direction);
+    }
+
+    private void addToRosterAndSpeak(String displayText, String speechText, ChatMessage.ChatDirection direction) {
+        if (tts != null) {
+            tts.speakOut(speechText);
+        }
+        final String tmp = TextUtils.isEmpty(displayText)? speechText:displayText;
+        chatRosterFragment.addMessage(new ChatMessage(tmp, direction));
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -232,9 +245,17 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
                 Log.d(TAG, "onResult");
 
                 final Status status = response.getStatus();
+                final Result result = response.getResult();
+                final String speech = result.getFulfillment().getSpeech();
+                final String displayText = result.getFulfillment().getDisplayText();
+
                 Log.i(TAG, "Status code: " + status.getCode());
                 Log.i(TAG, "Status type: " + status.getErrorType());
-                chatRosterFragment.addMessage(new ChatMessage(status.toString(), ChatMessage.ChatDirection.Sent));
+                Log.i(TAG, "Action : " + result.getAction());
+                Log.i(TAG, "Speech: " + speech);
+                Log.i(TAG, "Display Text: " + displayText);
+
+                addToRosterAndSpeak(displayText, speech, Received);
 
             }
         });
@@ -246,7 +267,7 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
             @Override
             public void run() {
                 changeState(MicrophoneState.Normal);
-                chatRosterFragment.addMessage(new ChatMessage(error.getMessage(), ChatMessage.ChatDirection.Received));
+                chatRosterFragment.addMessage(new ChatMessage(error.getMessage(), Received));
             }
         });
     }
@@ -282,6 +303,9 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
             @Override
             public void run() {
                 changeState (MicrophoneState.Busy);
+                if (!TextUtils.isEmpty(speechTextView.getText())) {
+                    addToRosterAndSpeak(speechTextView.getText().toString(), Sent);
+                }
             }
         });
     }
@@ -317,6 +341,9 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
         super.onDestroy();
         if (aiService != null) {
             aiService.stopListening();
+        }
+        if (tts != null) {
+            tts.close();
         }
     }
 

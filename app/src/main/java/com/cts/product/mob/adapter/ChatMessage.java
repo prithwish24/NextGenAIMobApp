@@ -13,7 +13,7 @@ public class ChatMessage {
         Sent, Received
     }
 
-    private String message;
+    private CharSequence message;
     private String sender;
     //private boolean selfMessage = false;
     private ChatDirection direction;
@@ -33,12 +33,15 @@ public class ChatMessage {
         this.message = message;
         this.direction = direction;
     }
-
+    public ChatMessage(CharSequence charSequence, ChatDirection direction) {
+        this.message = charSequence;
+        this.direction = direction;
+    }
     public int getType() {
         return direction.ordinal();
     }
 
-    public String getMessage() {
+    public CharSequence getMessage() {
         return message;
     }
 

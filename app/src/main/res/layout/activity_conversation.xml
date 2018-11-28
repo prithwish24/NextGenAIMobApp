@@ -82,7 +82,7 @@
             android:scrollbars="vertical"
             android:scrollbarStyle="outsideInset"
             android:textColor="@color/light_gray"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:text="Ask me something.."/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/button_mic"
