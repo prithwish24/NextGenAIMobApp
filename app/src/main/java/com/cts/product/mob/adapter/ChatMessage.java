@@ -37,12 +37,17 @@ public class ChatMessage {
         this.message = charSequence;
         this.direction = direction;
     }
+
     public int getType() {
         return direction.ordinal();
     }
 
     public CharSequence getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getSender() {

@@ -90,6 +90,12 @@ public class FragmentVoiceChat extends Fragment {
         mRecyclerView.scrollToPosition(mChatAdapter.getItemCount() - 1);
     }
 
+    public void updateLastMessage(String text) {
+        int lastNum = mChatMessages.size() - 1;
+        ChatMessage cm = mChatMessages.get(lastNum);
+        cm.setMessage(text);
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) { //TODO
         super.onViewCreated(view, savedInstanceState);

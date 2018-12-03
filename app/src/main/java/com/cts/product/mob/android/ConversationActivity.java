@@ -200,6 +200,13 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
         }*/
     }
 
+    private void updateUserSpeechToRoster() {
+        if (TextUtils.isEmpty(speechTextView.getText())) {
+            chatRosterFragment.updateLastMessage(speechTextView.getText().toString());
+            speechTextView.setText("");
+        }
+    }
+
     private void addToRosterAndSpeak(String speechText, ChatMessage.ChatDirection direction) {
         addToRosterAndSpeak(null, speechText, direction);
     }
@@ -241,6 +248,7 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
             @Override
             public void run() {
                 changeState(MicrophoneState.Normal);
+                updateUserSpeechToRoster();
 
                 Log.d(TAG, "onResult");
 
