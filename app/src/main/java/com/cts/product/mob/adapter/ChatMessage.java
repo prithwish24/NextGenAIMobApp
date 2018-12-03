@@ -42,6 +42,10 @@ public class ChatMessage {
         return direction.ordinal();
     }
 
+    public ChatDirection getDirection () {
+        return direction;
+    }
+
     public CharSequence getMessage() {
         return message;
     }

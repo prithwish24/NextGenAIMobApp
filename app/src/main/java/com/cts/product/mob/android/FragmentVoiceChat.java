@@ -91,21 +91,26 @@ public class FragmentVoiceChat extends Fragment {
     }
 
     public void updateLastMessage(String text) {
-        int lastNum = mChatMessages.size() - 1;
-        ChatMessage cm = mChatMessages.get(lastNum);
-        cm.setMessage(text);
+        if (mChatMessages.size() > 0) {
+            int lastNum = mChatMessages.size() - 1;
+            ChatMessage cm = mChatMessages.get(lastNum);
+            if (cm.getDirection() == ChatMessage.ChatDirection.Sent) {
+                mChatMessages.remove(lastNum);
+                addMessage(new ChatMessage(text, cm.getDirection()));
+            }
+        }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) { //TODO
         super.onViewCreated(view, savedInstanceState);
-        addMessage(new ChatMessage("Test message 1", ChatMessage.ChatDirection.Sent));
-        addMessage(new ChatMessage("Test message 2", ChatMessage.ChatDirection.Sent));
-        addMessage(new ChatMessage("Test message 3", ChatMessage.ChatDirection.Received));
-        addMessage(new ChatMessage("Test message 4", ChatMessage.ChatDirection.Received));
-        addMessage(new ChatMessage("Test message 5", ChatMessage.ChatDirection.Sent));
-        addMessage(new ChatMessage("Test message 6", ChatMessage.ChatDirection.Received));
-        addMessage(new ChatMessage("Test message 7", ChatMessage.ChatDirection.Sent));
-        addMessage(new ChatMessage("Test message 8", ChatMessage.ChatDirection.Received));
+//        addMessage(new ChatMessage("Test message 1", ChatMessage.ChatDirection.Sent));
+//        addMessage(new ChatMessage("Test message 2", ChatMessage.ChatDirection.Sent));
+//        addMessage(new ChatMessage("Test message 3", ChatMessage.ChatDirection.Received));
+//        addMessage(new ChatMessage("Test message 4", ChatMessage.ChatDirection.Received));
+//        addMessage(new ChatMessage("Test message 5", ChatMessage.ChatDirection.Sent));
+//        addMessage(new ChatMessage("Test message 6", ChatMessage.ChatDirection.Received));
+//        addMessage(new ChatMessage("Test message 7", ChatMessage.ChatDirection.Sent));
+//        addMessage(new ChatMessage("Test message 8", ChatMessage.ChatDirection.Received));
     }
 }
