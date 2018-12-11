@@ -5,7 +5,9 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -20,11 +22,13 @@ import android.widget.Toast;
 import com.cts.product.mob.R;
 import com.cts.product.mob.adapter.ChatMessage;
 import com.cts.product.mob.service.MicrophoneState;
-import com.cts.product.mob.util.TTS;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import ai.api.AIListener;
 import ai.api.AIServiceException;
@@ -42,7 +46,7 @@ import ai.api.services.GoogleRecognitionServiceImpl;
 import static com.cts.product.mob.adapter.ChatMessage.ChatDirection.Received;
 import static com.cts.product.mob.adapter.ChatMessage.ChatDirection.Sent;
 
-public class ConversationActivity extends AppCompatActivity implements AIListener, PartialResultsListener{
+public class ConversationActivity extends AppCompatActivity implements AIListener, PartialResultsListener, TextToSpeech.OnInitListener {
     private static final String TAG = ConversationActivity.class.getName();
     private final int PERMISSIONS_RECORD_AUDIO = 0x1;
 
@@ -54,7 +58,8 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
     // Services
     private AIService aiService;
     private MicrophoneState micState;
-    private TTS tts;
+    private TextToSpeech tts;
+    boolean isTtsReady = false;
 
 
     @Override
@@ -74,13 +79,14 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
         findViewById(R.id.button_info).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Please wait for further release!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Please wait for next release!", Toast.LENGTH_SHORT).show();
             }
         });
 
 
         // Global controls
-        tts = new TTS(this);
+        //tts = new TTS(this);
+        tts = new TextToSpeech(this, this);
         this.micButton = findViewById(R.id.button_mic);
         this.speechTextView = findViewById(R.id.speechTextView);
         this.chatRosterFragment = FragmentVoiceChat.newInstance("","");
@@ -137,14 +143,14 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
         String greet = "Hi";
         Calendar gc = GregorianCalendar.getInstance();
         int hr = gc.get(Calendar.HOUR_OF_DAY);
-        if (hr > 0 && hr < 12) {
+        if (hr >= 0 && hr < 12) {
             greet = "Good Morning!";
         } else if (hr >= 12 && hr <=19) {
             greet = "Good Afternoon!";
         } else if (hr > 19 && hr <=23) {
             greet = "Good Evening!";
         }
-        tts.speakOut(greet);
+        speakOut(greet);
     }
 
     private void startConversation() {
@@ -262,8 +268,8 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
     }
 
     private void addToRosterAndSpeak(String displayText, String speechText, ChatMessage.ChatDirection direction) {
-        if (tts != null && direction == ChatMessage.ChatDirection.Received) {
-            tts.speakOut(speechText);
+        if (direction == ChatMessage.ChatDirection.Received) {
+            speakOut(speechText);
         }
         final String tmp = TextUtils.isEmpty(displayText)? speechText:displayText;
         if (!TextUtils.isEmpty(tmp))
@@ -398,51 +404,92 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
     @Override
     protected void onStart() {
         super.onStart();
-        if (tts == null) {
-            tts = new TTS(this);
-        }
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (tts == null) {
-            tts = new TTS(this);
-        }
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         if (aiService != null) {
             aiService.stopListening();
         }
+        if (tts != null && tts.isSpeaking()) {
+            tts.stop();
+        }
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (aiService != null) {
             aiService.stopListening();
         }
         if (tts != null) {
-            tts.close();
+            tts.stop();
+            tts.shutdown();
         }
+        super.onDestroy();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
-        if (aiService != null)
+        if (aiService != null) {
             aiService.pause();
+        }
+        if (tts != null && tts.isSpeaking()) {
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onPause();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
-        if (aiService != null)
+        if (aiService != null) {
             aiService.resume();
+        }
+        super.onResume();
     }
 
 
+    private Queue<String> queue = new PriorityQueue<>();
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.US);
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                isTtsReady = true;
+                flushQueue();
+                Log.e("TTS", "TTS Initialized");
+            }
+        } else {
+            Log.e("TTS", "Initialization Failed!");
+        }
+    }
+
+    private void flushQueue() {
+        while (!queue.isEmpty()) {
+            speakOut(queue.poll());
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {}
+        }
+    }
+
+    private void speakOut(final String textToSpeak) {
+        if (!isTtsReady) {
+            queue.add(textToSpeak);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tts.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
+        }else{
+            tts.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
 }

@@ -96,8 +96,8 @@ public class FragmentVoiceChat extends Fragment {
             ChatMessage cm = mChatMessages.get(lastNum);
             if (cm.getDirection() == ChatMessage.ChatDirection.Sent) {
                 mChatMessages.remove(lastNum);
-                addMessage(new ChatMessage(text, cm.getDirection()));
             }
+            addMessage(new ChatMessage(text, cm.getDirection()));
         }
     }
 

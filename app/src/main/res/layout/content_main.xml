@@ -77,20 +77,21 @@
 
    </RelativeLayout>
 
-   <ImageView
-       android:layout_width="match_parent"
-       android:layout_height="200dp"
-       app:srcCompat="@drawable/homebanner1" />
-
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:layout_marginTop="30sp"
        android:orientation="vertical">
+
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="190dp"
+          android:layout_gravity="top"
+          app:srcCompat="@drawable/homebanner1" />
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginTop="30sp"
           android:gravity="center"
           android:text="START A RESERVATION"
           android:textColor="@android:color/black"
