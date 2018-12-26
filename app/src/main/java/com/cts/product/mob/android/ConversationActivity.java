@@ -76,10 +76,14 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
                 finish();
             }
         });
-        findViewById(R.id.button_info).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_restart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Please wait for next release!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Please wait for next release!", Toast.LENGTH_SHORT).show();
+                restartConversation();
+                clearRoster();
+                startConversation();
+
             }
         });
 
@@ -151,6 +155,32 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
             greet = "Good Evening!";
         }
         speakOut(greet);
+    }
+
+    private void restartConversation() {
+        final AIEvent aiEvent = new AIEvent("EVNT_RESET");
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setEvent(aiEvent);
+
+        new AsyncTask<AIRequest, Void, AIResponse>(){
+            @Override
+            protected AIResponse doInBackground(AIRequest... requests) {
+                try {
+                    return aiService.textRequest(requests[0]);
+                } catch (AIServiceException e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(AIResponse response) {
+                if (response != null) {
+                    //onResult(response);
+                    Toast.makeText(getApplicationContext(), "All context reset.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute(aiRequest);
     }
 
     private void startConversation() {
@@ -276,6 +306,9 @@ public class ConversationActivity extends AppCompatActivity implements AIListene
             chatRosterFragment.addMessage(new ChatMessage(tmp, direction));
     }
 
+    private void clearRoster() {
+        chatRosterFragment.clearMessages();;
+    }
 
     /*
      * ---------------- Control Listener Events ------------------

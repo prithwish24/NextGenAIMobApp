@@ -3,9 +3,14 @@
     <color name="colorPrimary">#169a5a</color>
     <color name="colorPrimaryDark">#006639</color>
     <color name="colorAccent">#ff7240</color>
-    
+
+    <color name="signInButton">#ff169a5a</color>
 
     <color name="black_overlay">#AA000000</color>
     <color name="light_gray">#e0eeeeee</color>
+
+    <color name="header_button_pressed">#ffff0000</color>
+    <color name="header_button_focused">#ffff0000</color>
+    <color name="header_button_default">@android:color/white</color>
 
 </resources>

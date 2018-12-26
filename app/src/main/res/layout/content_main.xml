@@ -73,7 +73,7 @@
           android:layout_marginBottom="15dp"
           android:layout_marginStart="15dp"
           android:text="SIGN IN"
-          android:textColor="@color/colorPrimary" />
+          android:textColor="@color/signInButton" />
 
    </RelativeLayout>
 

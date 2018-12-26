@@ -90,6 +90,11 @@ public class FragmentVoiceChat extends Fragment {
         mRecyclerView.scrollToPosition(mChatAdapter.getItemCount() - 1);
     }
 
+    public void clearMessages() {
+        mChatMessages.clear();
+        mChatAdapter.notifyDataSetChanged();
+    }
+
     public void updateLastMessage(String text) {
         if (mChatMessages.size() > 0) {
             int lastNum = mChatMessages.size() - 1;

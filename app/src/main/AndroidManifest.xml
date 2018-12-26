@@ -22,7 +22,8 @@
         </activity>
         <activity
             android:name=".android.ConversationActivity"
-            android:label="@string/title_activity_conversation">
+            android:label="@string/title_activity_conversation"
+            android:configChanges="orientation|screenSize">
         </activity>
     </application>
 
